@@ -4,7 +4,8 @@
     <title><% yield_content :title %>HuBoard</title>
    <link rel="shortcut icon" href="/img/favicon.ico?v=2" />
     <% if @parameters[:socket_backend] && logged_in? %>
-      <script src="<%= @parameters[:socket_backend] %>/socket.io/socket.io.js"></script>
+      <script src="/socket.io/socket.io.js"></script>
+      <%-# <script src="<%= @parameters[:socket_backend] %>/socket.io/socket.io.js"></script> -%>
       <script src="/scripts/modules/require.js"></script>
         <script>
           define("socket",function() {
