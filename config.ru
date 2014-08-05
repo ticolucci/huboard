@@ -3,7 +3,7 @@ require 'bundler'
 
 Bundler.require
 
-if File.exists?("./.env") 
+if File.exists?("./.env")
   require 'dotenv'
   Dotenv.load
 end
@@ -23,11 +23,6 @@ require 'compass'
 
 require './lib/bootstrap'
 
-configure :production, :staging do 
-  # require "newrelic_rpm"
-  use Rack::SSL
-end
-
 use Rack::NoWWW
 use Rack::Static, :urls => ["/files", "/font","/img", "/scripts","/css"], :root => "public"
 
@@ -36,11 +31,10 @@ map "/api" do
   run Huboard::API
 end
 
-map "/" do 
+map "/" do
   run Huboard::App
 end
 
-map "/settings" do 
+map "/settings" do
     run Huboard::Accounts
 end
-

@@ -2,10 +2,10 @@
 
   <% if false %>
     <% if HuboardApplication.socket_backend %>
-       <script src="<%= HuboardApplication.socket_backend %>/socket.io/socket.io.js"></script> 
+       <script src="<%= HuboardApplication.socket_backend %>/socket.io/socket.io.js"></script>
     <% end %>
   <% end %>
-  <script src="/socket.io/socket.io.js"></script>
+  <script src="/scripts/socket.io.js"></script>
 
   <%= javascript_tag 'board/application' %>
   <%= javascript_tag 'bootstrap' %>
