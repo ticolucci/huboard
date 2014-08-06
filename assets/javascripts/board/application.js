@@ -1,20 +1,20 @@
 ;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var HbAvatarComponent = Ember.Component.extend({
    tagName: 'img',
- 
+
   classNames: 'img-responsive',
   attributeBindings: ["src", "title", "width", "height"],
-  
+
   width: 24,
-  
+
   height: 24,
- 
+
   service: 'gravatar',
   title: "",
   src: function() {
     return this[this.get('service')+'Url']();
   }.property('service', 'user'),
- 
+
   gravatarUrl: function() {
     return this.get("user.avatar_url") ?
              this.get("user.avatar_url")
@@ -42,7 +42,7 @@ var HbLabelComponent = Ember.Component.extend({
     return "-x" + this.get("label.color");
   }.property(),
   selected: function () {
-    
+
     return this.get("parentView.selected").any(function (l){return l.name == this.get("label.name")}.bind(this))
   }.property("parentView.selected.@each")
 
@@ -132,7 +132,7 @@ var HbTabsComponent = Ember.Component.extend({
       select: function(pane) {
         this.set('selected', pane);
       }
-    
+
     }
 });
 
@@ -235,7 +235,7 @@ App.animateModalOpen = function() {
 
    $('body').addClass("fullscreen-open");
   promise.resolve();
-  
+
 
   return promise.promise;
 };
@@ -583,7 +583,7 @@ var FiltersController = Ember.ObjectController.extend({
           }
         }
       ]);
-    
+
     }else{
       this.set("userFilters", [
         {
@@ -594,7 +594,7 @@ var FiltersController = Ember.ObjectController.extend({
           }
         }
       ]);
-    
+
     }
     this.set("milestoneFilters", this.get("milestones").map(function(m){
        return Ember.Object.create({
@@ -611,7 +611,7 @@ var FiltersController = Ember.ObjectController.extend({
         mode:0,
         color: l.color,
         condition:function(i){
-          return _.union(i.labels, i.other_labels).any(function(label){ 
+          return _.union(i.labels, i.other_labels).any(function(label){
              return l.name.toLocaleLowerCase() === label.name.toLocaleLowerCase();
           });
         }
@@ -637,7 +637,7 @@ var FiltersController = Ember.ObjectController.extend({
   }.observes("milestoneFilters.@each.mode", "userFilters.@each.mode","labelFilters.@each.mode"),
   dimFiltersBinding: "App.dimFilters",
   hideFiltersBinding: "App.hideFilters"
-  
+
 });
 
 module.exports = FiltersController;
@@ -686,9 +686,9 @@ var IntegrationsController = Ember.ObjectController.extend({
     transitionTo: function(integration) {
       Ember.Route.prototype.render
         .call({
-            router:this.container.lookup("router:main"), 
+            router:this.container.lookup("router:main"),
             container: this.container
-          }, 
+          },
           "integrations." + integration.name.toLowerCase(), {
             into:"integrations.integrations",
             controller: this
@@ -776,7 +776,7 @@ var IssuesEditController = Ember.ObjectController.extend({
     if(value !== undefined) {
       if(value) {
         this.set("model.customState", "ready");
-        return true; 
+        return true;
       } else {
         this.set("model.customState", "");
         return false;
@@ -841,10 +841,10 @@ var IssuesEditController = Ember.ObjectController.extend({
   sortedActivities: function () {
     var events = this.get("_events"),
         comments = this.get("_comments");
-    
+
     return _.union(events,comments)
       .sort(function (a, b) {
-        return a.created_at.localeCompare(b.created_at); 
+        return a.created_at.localeCompare(b.created_at);
       });
   }.property("_events", "_comments")
 });
@@ -1002,7 +1002,7 @@ function serialize() {
         }
         if(this[key] && this[key].toString()[0] === "<" && this[key].toString()[this[key].toString().length - 1] === ">") {
            result[key] = serialize.call(this[key]);
-           
+
         }else if (Object.prototype.toString(this[key]) == "[object Array]") {
            result[key] = this[key].map(function (i){ return serialize.call(i); });
         } else {
@@ -1045,7 +1045,7 @@ var SocketMixin = Ember.Mixin.create({
           messageId = this.get(messagePath),
           eventNames = this.get("sockets") || {},
           controller = this;
-      
+
       this.get("socket.socket").on(channel, function (message){
 
           if(messageId != "*" && message.meta.identifier != messageId) { return; }
@@ -1092,7 +1092,7 @@ var Board = Ember.Object.extend({
     return firstIssue;
 
   },
-  combinedIssues: function () {                                                                        
+  combinedIssues: function () {
      return _.union.apply(_,[this.issues].concat(this.linkedRepos.map(function (r){return r.issues; })));
   },
   combinedLabels :function () {
@@ -1123,7 +1123,7 @@ var Board = Ember.Object.extend({
   loadLinkedBoards: function () {
     var model = this;
     var urls = this.get("link_labels").map(function (l) {
-      return "/api/" + model.full_name + "/linked/" + l.user + "/" + l.repo  
+      return "/api/" + model.full_name + "/linked/" + l.user + "/" + l.repo
     })
 
     var requests = urls.map(function (url){
@@ -1197,7 +1197,7 @@ var Issue = Ember.Object.extend(Serializable,{
         this.set("processing", true);
 
         switch(value){
-          case "ready": 
+          case "ready":
             Ember.$.extend(options, {
               url: "/api/" + full_name + "/issues/" + this.get("number") + "/ready",
               type: "PUT"
@@ -1230,7 +1230,7 @@ var Issue = Ember.Object.extend(Serializable,{
   }.property("_data.custom_state"),
   saveNew: function (order) {
     return Ember.$.ajax( {
-      url: "/api/" + this.get("repo.full_name") + "/issues", 
+      url: "/api/" + this.get("repo.full_name") + "/issues",
       data: JSON.stringify({issue: this.serialize(), order: order, correlationId: this.get("correlationId") }),
       dataType: 'json',
       type: "POST",
@@ -1245,7 +1245,7 @@ var Issue = Ember.Object.extend(Serializable,{
           full_name = user + "/" + repo;
 
     return Ember.$.ajax( {
-      url: "/api/" + full_name + "/issues/" + this.get("number") + "/comment", 
+      url: "/api/" + full_name + "/issues/" + this.get("number") + "/comment",
       data: JSON.stringify({ markdown: markdown, correlationId: this.get("correlationId")}),
       dataType: 'json',
       type: "POST",
@@ -1262,7 +1262,7 @@ var Issue = Ember.Object.extend(Serializable,{
           full_name = user + "/" + repo;
 
     return Ember.$.ajax( {
-      url: "/api/" + full_name + "/issues/" + this.get("number"), 
+      url: "/api/" + full_name + "/issues/" + this.get("number"),
       data: JSON.stringify({labels: this.serialize().other_labels, correlationId: this.get("correlationId")}),
       dataType: 'json',
       type: "PUT",
@@ -1276,7 +1276,7 @@ var Issue = Ember.Object.extend(Serializable,{
       var user = this.get("repo.owner.login"),
           repo = this.get("repo.name"),
           full_name = user + "/" + repo;
-     
+
      return Ember.$.getJSON("/api/" + full_name + "/issues/" + this.get("number") + "/details").then(function(details){
        this.set("activities", details.activities);
        this.set("processing", false);
@@ -1321,14 +1321,14 @@ var Issue = Ember.Object.extend(Serializable,{
 
       return Ember.$.post("/api/" + full_name + "/assigncard", {
         number : this.get("number"),
-        assignee: login, 
+        assignee: login,
         correlationId: this.get("correlationId")
       }).then(function( response ){
           this.set("assignee", response.assignee);
           return this;
       }.bind(this))
-    
-      
+
+
   },
   assignMilestone: function(index, milestone){
     var changedMilestones = false;
@@ -1357,12 +1357,12 @@ var Issue = Ember.Object.extend(Serializable,{
           return this;
       }.bind(this))
     }
-      
+
   },
   reorder: function (index, column) {
       var changedColumns = this.get("current_state") !== column;
       changedColumns && this.set("_data.custom_state", "");
-        
+
       this.set("current_state", column)
       this.set("_data.order", index);
 
@@ -1380,7 +1380,7 @@ var Issue = Ember.Object.extend(Serializable,{
          this.set("_data.order", response._data.order);
          return this;
       }.bind(this))
-  
+
   }
 
 });
@@ -1441,8 +1441,8 @@ var Repo = Ember.Object.extend(Serializable,{
         integrations.rows.forEach(function(i){
           results.pushObject(App.Integration.create(i.value));
         })
-        this._integrations = Ember.Object.create({ 
-          integrations: results 
+        this._integrations = Ember.Object.create({
+          integrations: results
         })
         return this._integrations;
       }.bind(this));
@@ -1563,11 +1563,11 @@ var IndexRoute = Ember.Route.extend({
     });
     cssView.appendTo("head")
     return model.loadLinkedBoards().then(function() {
-      App.set("isLoaded", true); 
+      App.set("isLoaded", true);
     }.bind(this));
   },
   renderTemplate: function() {
-    
+
     this._super.apply(this, arguments);
     this.render('filters', {into: 'index', outlet: 'sidebarMiddle'})
     this.render('assignee', {into: 'index', outlet: 'sidebarTop'})
@@ -1681,7 +1681,7 @@ module.exports = MilestonesRoute =  Ember.Route.extend({
     });
     cssView.appendTo("head")
     return model.loadLinkedBoards().then(function() {
-     App.set("isLoaded", true); 
+     App.set("isLoaded", true);
     }.bind(this));
   },
 
@@ -1726,7 +1726,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, stack2, hashContexts, hashTypes, options, self=this, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', stack1, stack2, hashContexts, hashTypes, options;
   data.buffer.push("\n        ");
   hashContexts = {'bubbles': depth0};
@@ -1740,13 +1740,13 @@ function program1(depth0,data) {
   return buffer;
   }
 function program2(depth0,data) {
-  
-  
+
+
   data.buffer.push("\n          Milestones\n        ");
   }
 
 function program4(depth0,data) {
-  
+
   var buffer = '', stack1, stack2, hashContexts, hashTypes, options;
   data.buffer.push("\n        ");
   hashContexts = {'bubbles': depth0};
@@ -1760,13 +1760,13 @@ function program4(depth0,data) {
   return buffer;
   }
 function program5(depth0,data) {
-  
-  
+
+
   data.buffer.push("\n          Tasks\n        ");
   }
 
 function program7(depth0,data) {
-  
+
   var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\n        <li class=\"dropdown\">\n          <a class=\"dropdown-toggle avatar\" data-toggle=\"dropdown\" href=\"#\">\n          \n          ");
   hashContexts = {'user': depth0,'width': depth0};
@@ -1781,8 +1781,8 @@ function program7(depth0,data) {
   }
 
 function program9(depth0,data) {
-  
-  
+
+
   data.buffer.push("\n         <li>\n           <form action=\"/login\" method=\"GET\">\n            <button class=\"hb-button\"> Sign in </button>\n          </form>\n         </li>\n      ");
   }
 
@@ -1850,7 +1850,7 @@ function program9(depth0,data) {
   data.buffer.push(escapeExpression(((stack1 = helpers.outlet || depth0.outlet),stack1 ? stack1.call(depth0, "modal", options) : helperMissing.call(depth0, "outlet", "modal", options))));
   data.buffer.push("\n\n\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['assignee'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -1859,7 +1859,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', stack1, hashTypes, hashContexts;
   data.buffer.push("\n  ");
   hashTypes = {};
@@ -1870,7 +1870,7 @@ function program1(depth0,data) {
   return buffer;
   }
 function program2(depth0,data) {
-  
+
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n    <a href=\"#\" ");
   hashTypes = {};
@@ -1881,7 +1881,7 @@ function program2(depth0,data) {
   }
 
 function program4(depth0,data) {
-  
+
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n    <a href=\"#\" ");
   hashTypes = {};
@@ -1892,7 +1892,7 @@ function program4(depth0,data) {
   }
 
 function program6(depth0,data) {
-  
+
   var buffer = '', hashContexts, hashTypes;
   data.buffer.push("\n    ");
   hashContexts = {'lastClicked': depth0,'data-assignee': depth0,'gravatarUser': depth0,'content': depth0};
@@ -1919,7 +1919,7 @@ function program6(depth0,data) {
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n</div>\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['card'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -1928,7 +1928,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashContexts, hashTypes, self=this, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', stack1, hashTypes, hashContexts;
   data.buffer.push(" ");
   hashTypes = {};
@@ -1939,13 +1939,13 @@ function program1(depth0,data) {
   return buffer;
   }
 function program2(depth0,data) {
-  
-  
+
+
   data.buffer.push(" <i class=\"ui-icon ui-icon-21 ui-icon-branch-merge\"></i> ");
   }
 
 function program4(depth0,data) {
-  
+
   var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\n  ");
   hashContexts = {'user': depth0};
@@ -1959,7 +1959,7 @@ function program4(depth0,data) {
   }
 
 function program6(depth0,data) {
-  
+
   var buffer = '', hashContexts, hashTypes;
   data.buffer.push("\n      <div class=\"card-label-wrapper\"> \n         <div ");
   hashContexts = {'class': depth0};
@@ -1982,7 +1982,7 @@ function program6(depth0,data) {
   }
 
 function program8(depth0,data) {
-  
+
   var buffer = '', hashContexts, hashTypes;
   data.buffer.push("\n\n<div class=\"hb-action actions-close\">\n  <button class=\"hb-button\" ");
   hashContexts = {'disabled': depth0};
@@ -2001,7 +2001,7 @@ function program8(depth0,data) {
   }
 
 function program10(depth0,data) {
-  
+
   var buffer = '', hashContexts, hashTypes;
   data.buffer.push("\n\n<div class=\"hb-action actions-archive\">\n  <button class=\"hb-button-icon hb-button hb-button-grey\" ");
   hashContexts = {'disabled': depth0};
@@ -2066,7 +2066,7 @@ function program10(depth0,data) {
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n\n<div class=\"card-states\">\n   <img src=\"/img/check.png\" title=\"Issue is closed\" class=\"hb-state-closed\"/>\n   <img src=\"/img/arrow.png\" class=\"hb-state-ready\"/>\n   <img src=\"/img/x.png\" class=\"hb-state-blocked\"/>\n</div>\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['card_item'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2081,7 +2081,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(((stack1 = helpers.render || depth0.render),stack1 ? stack1.call(depth0, "card", "view.content", options) : helperMissing.call(depth0, "render", "card", "view.content", options))));
   data.buffer.push("\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['column_count'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2090,7 +2090,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n  ");
   hashTypes = {};
@@ -2105,8 +2105,8 @@ function program1(depth0,data) {
   }
 
 function program3(depth0,data) {
-  
-  
+
+
   data.buffer.push("\n\n");
   }
 
@@ -2116,7 +2116,7 @@ function program3(depth0,data) {
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['column_header'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2136,7 +2136,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(((stack1 = helpers.render || depth0.render),stack1 ? stack1.call(depth0, "column_count", "model", options) : helperMissing.call(depth0, "render", "column_count", "model", options))));
   data.buffer.push("</small>\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['empty'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2146,7 +2146,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
 
 
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['filter'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2167,7 +2167,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(" <span class=\"ui-icon ui-icon-x\"></span>\n  </a>\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['filters'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2176,7 +2176,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', hashContexts, hashTypes;
   data.buffer.push("\n    ");
   hashContexts = {'lastClicked': depth0,'name': depth0,'mode': depth0,'color': depth0};
@@ -2192,7 +2192,7 @@ function program1(depth0,data) {
   }
 
 function program3(depth0,data) {
-  
+
   var buffer = '', hashContexts, hashTypes;
   data.buffer.push("\n    ");
   hashContexts = {'lastClicked': depth0,'name': depth0,'mode': depth0,'color': depth0};
@@ -2208,7 +2208,7 @@ function program3(depth0,data) {
   }
 
 function program5(depth0,data) {
-  
+
   var buffer = '', hashContexts, hashTypes;
   data.buffer.push("\n    ");
   hashContexts = {'lastClicked': depth0,'name': depth0,'mode': depth0,'color': depth0};
@@ -2240,7 +2240,7 @@ function program5(depth0,data) {
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n\n</ul>\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['index'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2249,13 +2249,13 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, stack2, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', stack1, stack2, hashTypes, hashContexts, options;
   data.buffer.push("\n  <div class=\"create-button\">\n    <button ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "createNewIssue", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" class=\"hb-button small\">Create new issue</button>\n\n    <span class=\"dropdown\">\n      <a data-toggle=\"dropdown\" class=\"dropdown-toggle hb-icon-link\" href=\"#\">\n        <i class=\"ui-icon ui-icon-18 ui-icon-gear\"></i>\n      </a>\n      <ul class=\"dropdown-menu dropdown-menu-right\">\n        <li>\n            ");
+  data.buffer.push(" class=\"hb-button small\">Create new issue on <strong  class='repo-uppercase-name'>"+ App.repo.name +"</strong></button>\n\n    <span class=\"dropdown\">\n      <a data-toggle=\"dropdown\" class=\"dropdown-toggle hb-icon-link\" href=\"#\">\n        <i class=\"ui-icon ui-icon-18 ui-icon-gear\"></i>\n      </a>\n      <ul class=\"dropdown-menu dropdown-menu-right\">\n        <li>\n            ");
   hashContexts = {'title': depth0,'bubbles': depth0};
   hashTypes = {'title': "STRING",'bubbles': "BOOLEAN"};
   options = {hash:{
@@ -2268,24 +2268,24 @@ function program1(depth0,data) {
   return buffer;
   }
 function program2(depth0,data) {
-  
-  
+
+
   data.buffer.push("\n             Integrations\n            ");
   }
 
 function program4(depth0,data) {
-  
+
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n  <div class=\"create-button\">\n    <a target=\"_blank\" href=\"");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.unbound.call(depth0, "App.repo.html_url", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("/issues/new\" class=\"hb-button small\">Create new issue</a>\n  </div>\n  ");
+  data.buffer.push("/issues/new\" class=\"hb-button small\">Create new issue on <strong  class='repo-uppercase-name'>"+ App.repo.name +"</strong></a>\n  </div>\n  ");
   return buffer;
   }
 
 function program6(depth0,data) {
-  
+
   var buffer = '', stack1, hashTypes, hashContexts, options;
   data.buffer.push("\n      ");
   hashTypes = {};
@@ -2334,7 +2334,7 @@ function program6(depth0,data) {
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n    </div>\n  </div>\n</div>\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['issue'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2343,7 +2343,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, stack2, hashTypes, hashContexts, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', stack1, hashTypes, hashContexts;
   data.buffer.push("\n      ");
   hashTypes = {};
@@ -2354,7 +2354,7 @@ function program1(depth0,data) {
   return buffer;
   }
 function program2(depth0,data) {
-  
+
   var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\n      <div>\n        <label>\n          ");
   hashContexts = {'type': depth0,'name': depth0,'checked': depth0};
@@ -2379,7 +2379,7 @@ function program2(depth0,data) {
   }
 
 function program4(depth0,data) {
-  
+
   var buffer = '', stack1, hashContexts, hashTypes;
   data.buffer.push("\n        ");
   hashContexts = {'unescaped': depth0};
@@ -2393,13 +2393,13 @@ function program4(depth0,data) {
   }
 
 function program6(depth0,data) {
-  
-  
+
+
   data.buffer.push("\n        <p class=\"empty\"> No description given </p>\n      ");
   }
 
 function program8(depth0,data) {
-  
+
   var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\n  <hr></hr>\n  <form ");
   hashContexts = {'on': depth0};
@@ -2502,17 +2502,17 @@ function program8(depth0,data) {
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n</div>\n</div>\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['loading'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-  
+
 
 
   data.buffer.push("<div class=\"fullscreen-overlay fixed\" ></div>\n");
-  
+
 });
 
 Ember.TEMPLATES['milestone_column_header'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2527,7 +2527,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "title", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("</span>\n\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['milestones'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2536,13 +2536,13 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, stack2, hashTypes, hashContexts, options, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', stack1, stack2, hashTypes, hashContexts, options;
   data.buffer.push("\n    <div class=\"create-button\">\n      <button ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "createNewIssue", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" class=\"hb-button small\">Create new issue</button>\n      <span class=\"dropdown\">\n        <a data-toggle=\"dropdown\" class=\"dropdown-toggle hb-icon-link\" href=\"#\">\n          <i class=\"ui-icon ui-icon-18 ui-icon-gear\"></i>\n        </a>\n        <ul class=\"dropdown-menu dropdown-menu-right\">\n          <li>\n              ");
+  data.buffer.push(" class=\"hb-button small\">Create new issue on <strong  class='repo-uppercase-name'>"+ App.repo.name +"</strong></button>\n      <span class=\"dropdown\">\n        <a data-toggle=\"dropdown\" class=\"dropdown-toggle hb-icon-link\" href=\"#\">\n          <i class=\"ui-icon ui-icon-18 ui-icon-gear\"></i>\n        </a>\n        <ul class=\"dropdown-menu dropdown-menu-right\">\n          <li>\n              ");
   hashContexts = {'title': depth0,'bubbles': depth0};
   hashTypes = {'title': "STRING",'bubbles': "BOOLEAN"};
   options = {hash:{
@@ -2555,24 +2555,24 @@ function program1(depth0,data) {
   return buffer;
   }
 function program2(depth0,data) {
-  
-  
+
+
   data.buffer.push("\n              Integrations\n              ");
   }
 
 function program4(depth0,data) {
-  
+
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n    <div class=\"create-button\">\n      <a target=\"_blank\" href=\"");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.unbound.call(depth0, "App.repo.html_url", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("/issues/new\" class=\"hb-button small\">Create new issue</a>\n    </div>\n  ");
+  data.buffer.push("/issues/new\" class=\"hb-button small\">Create new issue on <strong  class='repo-uppercase-name'>"+ App.repo.name +"</strong></a>\n    </div>\n  ");
   return buffer;
   }
 
 function program6(depth0,data) {
-  
+
   var buffer = '', stack1, hashTypes, hashContexts, options;
   data.buffer.push("\n        ");
   hashTypes = {};
@@ -2626,7 +2626,7 @@ function program6(depth0,data) {
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n    </div>\n  </div>\n</div>\n\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['search'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2645,7 +2645,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(((stack1 = helpers.input || depth0.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
   data.buffer.push("\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['layouts/modal'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2666,7 +2666,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\n    </div>\n  </div>\n</div>\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['issue/comment'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2706,7 +2706,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n</div>\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['issue/create'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2715,7 +2715,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, stack2, hashContexts, hashTypes, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\n        ");
   hashContexts = {'values': depth0,'title': depth0,'labels': depth0};
@@ -2764,7 +2764,7 @@ function program1(depth0,data) {
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\n    </div>\n  </form>\n</div>\n\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['issue/events/assigned'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2774,7 +2774,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
 
 
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['issue/events/closed'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2801,7 +2801,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(((stack1 = helpers.momentAgo || depth0.momentAgo),stack1 ? stack1.call(depth0, "view.content.created_at", options) : helperMissing.call(depth0, "momentAgo", "view.content.created_at", options))));
   data.buffer.push("\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['issue/events/mentioned'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2811,7 +2811,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
 
 
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['issue/events/merged'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2821,7 +2821,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
 
 
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['issue/events/referenced'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2831,7 +2831,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
 
 
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['issue/events/reopened'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2858,7 +2858,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(((stack1 = helpers.momentAgo || depth0.momentAgo),stack1 ? stack1.call(depth0, "view.content.created_at", options) : helperMissing.call(depth0, "momentAgo", "view.content.created_at", options))));
   data.buffer.push("\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['issue/events/subscribed'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2868,7 +2868,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
 
 
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['integrations/gitter'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2907,7 +2907,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "cancel", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(">Cancel</a> </div>\n      </form>\n    </div>\n\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['integrations/index'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2916,7 +2916,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n<button type=\"button\" class=\"hb-button hb-button-grey\" ");
   hashTypes = {};
@@ -2936,7 +2936,7 @@ function program1(depth0,data) {
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['integrations/integrations'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -2945,7 +2945,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', stack1, hashTypes, hashContexts;
   data.buffer.push("\n          <li>\n            <div class=\"integration\">\n              <button ");
   hashTypes = {};
@@ -2964,7 +2964,7 @@ function program1(depth0,data) {
   return buffer;
   }
 function program2(depth0,data) {
-  
+
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n              <em>");
   hashTypes = {};
@@ -2979,8 +2979,8 @@ function program2(depth0,data) {
   }
 
 function program4(depth0,data) {
-  
-  
+
+
   data.buffer.push("\n          <li>\n            <em> Integrations are totally rad, you should add one </em>\n          </li>\n        ");
   }
 
@@ -2995,7 +2995,7 @@ function program4(depth0,data) {
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "outlet", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\n</div>\n\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['integrations/webhook'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -3030,7 +3030,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "cancel", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(">Cancel</a> </div>\n      </form>\n    </div>\n\n\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['components/hb-avatar'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -3044,7 +3044,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['components/hb-label-selector'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -3053,7 +3053,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', stack1, hashTypes, hashContexts;
   data.buffer.push("\n  ");
   hashTypes = {};
@@ -3064,7 +3064,7 @@ function program1(depth0,data) {
   return buffer;
   }
 function program2(depth0,data) {
-  
+
   var buffer = '', stack1, stack2, hashContexts, hashTypes, options;
   data.buffer.push("\n    ");
   hashContexts = {'label': depth0};
@@ -3078,7 +3078,7 @@ function program2(depth0,data) {
   return buffer;
   }
 function program3(depth0,data) {
-  
+
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n      <span>\n        ");
   hashTypes = {};
@@ -3089,7 +3089,7 @@ function program3(depth0,data) {
   }
 
 function program5(depth0,data) {
-  
+
   var buffer = '', stack1, hashTypes, hashContexts;
   data.buffer.push("\n  ");
   hashTypes = {};
@@ -3100,7 +3100,7 @@ function program5(depth0,data) {
   return buffer;
   }
 function program6(depth0,data) {
-  
+
   var buffer = '', hashTypes, hashContexts;
   data.buffer.push("\n    <li class=\"card-label active -x");
   hashTypes = {};
@@ -3125,7 +3125,7 @@ function program6(depth0,data) {
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['components/hb-label'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -3139,7 +3139,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['components/hb-markdown-editor'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -3148,7 +3148,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, options, hashTypes, hashContexts, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this, functionType="function", blockHelperMissing=helpers.blockHelperMissing;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', stack1, stack2, hashContexts, hashTypes, options;
   data.buffer.push("\n  ");
   hashContexts = {'title': depth0};
@@ -3170,7 +3170,7 @@ function program1(depth0,data) {
   return buffer;
   }
 function program2(depth0,data) {
-  
+
   var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\n    <div class=\"markdown-composer\">\n      ");
   hashContexts = {'autoresize': depth0,'value': depth0,'placeholder': depth0};
@@ -3186,7 +3186,7 @@ function program2(depth0,data) {
   }
 
 function program4(depth0,data) {
-  
+
   var buffer = '', stack1, hashContexts, hashTypes;
   data.buffer.push("\n    <div class=\"markdown-preview\">\n      ");
   hashContexts = {'unescaped': depth0};
@@ -3208,7 +3208,7 @@ function program4(depth0,data) {
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\n\n\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['components/hb-pane'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -3222,7 +3222,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['components/hb-tabs'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -3231,7 +3231,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', hashContexts, hashTypes;
   data.buffer.push("\n  <li ");
   hashContexts = {'class': depth0};
@@ -3264,7 +3264,7 @@ function program1(depth0,data) {
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\n</div>\n");
   return buffer;
-  
+
 });
 
 Ember.TEMPLATES['assignee/filter'] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
@@ -3284,7 +3284,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   data.buffer.push(escapeExpression(((stack1 = helpers['hb-avatar'] || depth0['hb-avatar']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "hb-avatar", options))));
   data.buffer.push("\n\n");
   return buffer;
-  
+
 });
 
 
@@ -7204,14 +7204,14 @@ Map.create = function() {
 Map.prototype = {
   /**
     This property will change as the number of objects in the map changes.
-   
+
     @property length
     @type number
     @default 0
   */
   length: 0,
-    
-    
+
+
   /**
     Retrieve the value associated with a given key.
 
@@ -8619,9 +8619,9 @@ ComputedPropertyPrototype.readOnly = function(readOnly) {
 ComputedPropertyPrototype.property = function() {
   var args;
 
-  
+
     args = a_slice.call(arguments);
-  
+
 
   this._dependentKeys = args;
   return this;
@@ -10109,7 +10109,7 @@ define("backburner",
             }
           }
         } else if (window.toString.call(timer) === "[object Array]"){ // we're cancelling a throttle or debounce
-          return this._cancelItem(findThrottler, throttlers, timer) || 
+          return this._cancelItem(findThrottler, throttlers, timer) ||
                    this._cancelItem(findDebouncee, debouncees, timer);
         } else {
           return; // timer was null or not a timer
@@ -11900,7 +11900,7 @@ Ember.observer = function() {
   var func  = a_slice.call(arguments, -1)[0];
   var paths;
 
-  
+
     paths = a_slice.call(arguments, 0, -1);
 
     if (typeof func !== "function") {
@@ -11909,7 +11909,7 @@ Ember.observer = function() {
       func  = arguments[0];
       paths = a_slice.call(arguments, 1);
     }
-  
+
 
   if (typeof func !== "function") {
     throw new Ember.Error("Ember.observer called without a function");
@@ -11998,7 +11998,7 @@ Ember.beforeObserver = function() {
   var func  = a_slice.call(arguments, -1)[0];
   var paths;
 
-  
+
     paths = a_slice.call(arguments, 0, -1);
 
     if (typeof func !== "function") {
@@ -12007,7 +12007,7 @@ Ember.beforeObserver = function() {
       func  = arguments[0];
       paths = a_slice.call(arguments, 1);
     }
-  
+
 
   if (typeof func !== "function") {
     throw new Ember.Error("Ember.beforeObserver called without a function");
@@ -12085,7 +12085,7 @@ Ember Metal
   @class RSVP
   @module RSVP
   */
-define("rsvp/all", 
+define("rsvp/all",
   ["./promise","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -12105,7 +12105,7 @@ define("rsvp/all",
       return Promise.all(array, label);
     };
   });
-define("rsvp/all_settled", 
+define("rsvp/all_settled",
   ["./promise","./utils","exports"],
   function(__dependency1__, __dependency2__, __exports__) {
     "use strict";
@@ -12220,7 +12220,7 @@ define("rsvp/all_settled",
       return { state: 'rejected', reason: reason };
     }
   });
-define("rsvp/config", 
+define("rsvp/config",
   ["./events","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -12251,7 +12251,7 @@ define("rsvp/config",
     __exports__.config = config;
     __exports__.configure = configure;
   });
-define("rsvp/defer", 
+define("rsvp/defer",
   ["./promise","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -12300,7 +12300,7 @@ define("rsvp/defer",
       return deferred;
     };
   });
-define("rsvp/events", 
+define("rsvp/events",
   ["exports"],
   function(__exports__) {
     "use strict";
@@ -12504,7 +12504,7 @@ define("rsvp/events",
       }
     };
   });
-define("rsvp/filter", 
+define("rsvp/filter",
   ["./all","./map","./utils","exports"],
   function(__dependency1__, __dependency2__, __dependency3__, __exports__) {
     "use strict";
@@ -12620,7 +12620,7 @@ define("rsvp/filter",
 
     __exports__["default"] = filter;
   });
-define("rsvp/hash", 
+define("rsvp/hash",
   ["./promise","./utils","exports"],
   function(__dependency1__, __dependency2__, __exports__) {
     "use strict";
@@ -12758,7 +12758,7 @@ define("rsvp/hash",
       });
     };
   });
-define("rsvp/instrument", 
+define("rsvp/instrument",
   ["./config","./utils","exports"],
   function(__dependency1__, __dependency2__, __exports__) {
     "use strict";
@@ -12784,7 +12784,7 @@ define("rsvp/instrument",
       }
     };
   });
-define("rsvp/map", 
+define("rsvp/map",
   ["./promise","./all","./utils","exports"],
   function(__dependency1__, __dependency2__, __dependency3__, __exports__) {
     "use strict";
@@ -12893,7 +12893,7 @@ define("rsvp/map",
       });
     };
   });
-define("rsvp/node", 
+define("rsvp/node",
   ["./promise","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -13006,7 +13006,7 @@ define("rsvp/node",
       };
     };
   });
-define("rsvp/promise", 
+define("rsvp/promise",
   ["./config","./events","./instrument","./utils","./promise/cast","./promise/all","./promise/race","./promise/resolve","./promise/reject","exports"],
   function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __dependency6__, __dependency7__, __dependency8__, __dependency9__, __exports__) {
     "use strict";
@@ -13635,7 +13635,7 @@ define("rsvp/promise",
       publish(promise, promise._state = REJECTED);
     }
   });
-define("rsvp/promise/all", 
+define("rsvp/promise/all",
   ["../utils","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -13736,7 +13736,7 @@ define("rsvp/promise/all",
       }, label);
     };
   });
-define("rsvp/promise/cast", 
+define("rsvp/promise/cast",
   ["exports"],
   function(__exports__) {
     "use strict";
@@ -13820,7 +13820,7 @@ define("rsvp/promise/cast",
       }, label);
     };
   });
-define("rsvp/promise/race", 
+define("rsvp/promise/race",
   ["../utils","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -13923,7 +13923,7 @@ define("rsvp/promise/race",
       }, label);
     };
   });
-define("rsvp/promise/reject", 
+define("rsvp/promise/reject",
   ["exports"],
   function(__exports__) {
     "use strict";
@@ -13971,7 +13971,7 @@ define("rsvp/promise/reject",
       }, label);
     };
   });
-define("rsvp/promise/resolve", 
+define("rsvp/promise/resolve",
   ["exports"],
   function(__exports__) {
     "use strict";
@@ -14016,7 +14016,7 @@ define("rsvp/promise/resolve",
       }, label);
     };
   });
-define("rsvp/race", 
+define("rsvp/race",
   ["./promise","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -14035,7 +14035,7 @@ define("rsvp/race",
       return Promise.race(array, label);
     };
   });
-define("rsvp/reject", 
+define("rsvp/reject",
   ["./promise","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -14056,7 +14056,7 @@ define("rsvp/reject",
       return Promise.reject(reason, label);
     };
   });
-define("rsvp/resolve", 
+define("rsvp/resolve",
   ["./promise","exports"],
   function(__dependency1__, __exports__) {
     "use strict";
@@ -14078,7 +14078,7 @@ define("rsvp/resolve",
       return Promise.resolve(value, label);
     };
   });
-define("rsvp/rethrow", 
+define("rsvp/rethrow",
   ["exports"],
   function(__exports__) {
     "use strict";
@@ -14128,7 +14128,7 @@ define("rsvp/rethrow",
       throw reason;
     };
   });
-define("rsvp/utils", 
+define("rsvp/utils",
   ["exports"],
   function(__exports__) {
     "use strict";
@@ -14163,7 +14163,7 @@ define("rsvp/utils",
     };
     __exports__.keysOf = keysOf;
   });
-define("rsvp", 
+define("rsvp",
   ["./rsvp/promise","./rsvp/events","./rsvp/node","./rsvp/all","./rsvp/all_settled","./rsvp/race","./rsvp/hash","./rsvp/rethrow","./rsvp/defer","./rsvp/config","./rsvp/map","./rsvp/resolve","./rsvp/reject","./rsvp/filter","exports"],
   function(__dependency1__, __dependency2__, __dependency3__, __dependency4__, __dependency5__, __dependency6__, __dependency7__, __dependency8__, __dependency9__, __dependency10__, __dependency11__, __dependency12__, __dependency13__, __dependency14__, __exports__) {
     "use strict";
@@ -15798,7 +15798,7 @@ if (Ember.EXTEND_PROTOTYPES === true || Ember.EXTEND_PROTOTYPES.String) {
     return capitalize(this);
   };
 
-  
+
 }
 
 
@@ -17242,7 +17242,7 @@ function classToString() {
   if (this[NAME_KEY]) {
     ret = this[NAME_KEY];
   } else if (this._toString) {
-    ret = this._toString; 
+    ret = this._toString;
   } else {
     var str = superClassString(this);
     if (str) {
@@ -19482,10 +19482,10 @@ ReduceComputedProperty.prototype.property = function () {
     } else if (match = eachPropertyPattern.exec(dependentKey)) {
       dependentArrayKey = match[1];
 
-      
+
         itemPropertyKey = match[2];
         cp.itemPropertyKey(dependentArrayKey, itemPropertyKey);
-      
+
       propertyArgs.add(dependentArrayKey);
     } else {
       propertyArgs.add(dependentKey);
@@ -20738,9 +20738,9 @@ if (Ember.EXTEND_PROTOTYPES === true || Ember.EXTEND_PROTOTYPES.Function) {
     @for Function
   */
   Function.prototype.observes = function() {
-    
+
       this.__ember_observes__ = a_slice.call(arguments);
-    
+
 
     return this;
   };
@@ -20803,9 +20803,9 @@ if (Ember.EXTEND_PROTOTYPES === true || Ember.EXTEND_PROTOTYPES.Function) {
     @for Function
   */
   Function.prototype.observesBefore = function() {
-    
+
       this.__ember_observesBefore__ = a_slice.call(arguments);
-    
+
 
     return this;
   };
@@ -24184,8 +24184,8 @@ var get = Ember.get, set = Ember.set, forEach = Ember.EnumerableUtils.forEach;
    ```javascript
   songsController.get('content').get('firstObject'); // Returns the unsorted original content
   songsController.get('firstObject'); // Returns the sorted content.
-  ``` 
-  
+  ```
+
   Although the sorted content can also be accessed through the arrangedContent property,
   it is preferable to use the proxied class and not the arrangedContent array directly.
 
@@ -24274,7 +24274,7 @@ Ember.SortableMixin = Ember.Mixin.create(Ember.MutableEnumerable, {
   /**
     Overrides the default arrangedContent from arrayProxy in order to sort by sortFunction.
     Also sets up observers for each sortProperty on each item in the content Array.
-    
+
     @property arrangedContent
   */
 
@@ -29581,7 +29581,7 @@ Ember.Component = Ember.View.extend(Ember.TargetActionSupport, {
     When the component receives a browser `click` event it translate this
     interaction into application-specific semantics ("play" or "stop") and
     triggers the specified action name on the controller for the template
-    where the component is used: 
+    where the component is used:
 
 
     ```javascript
@@ -30597,7 +30597,7 @@ var handlebarsGet = Ember.Handlebars.get = function(root, path, options) {
       normalizedPath = normalizePath(root, path, data),
       value;
 
-  
+
     root = normalizedPath.root;
     path = normalizedPath.path;
 
@@ -30606,7 +30606,7 @@ var handlebarsGet = Ember.Handlebars.get = function(root, path, options) {
     if (value === undefined && root !== Ember.lookup && Ember.isGlobalPath(path)) {
       value = Ember.get(Ember.lookup, path);
     }
-  
+
 
   return value;
 };
@@ -31846,7 +31846,7 @@ EmberHandlebars.registerHelper('boundIf', function boundIfHelper(property, fn) {
   </div>
   ```
 
-  `{{with}}` can be our best friend in these cases, 
+  `{{with}}` can be our best friend in these cases,
   instead of writing `user.role.*` over and over, we use `{{#with user.role}}`.
   Now the context within the `{{#with}} .. {{/with}}` block is `user.role` so you can do the following:
 
@@ -31865,7 +31865,7 @@ EmberHandlebars.registerHelper('boundIf', function boundIfHelper(property, fn) {
 
   ### `as` operator
 
-  This operator aliases the scope to a new name. It's helpful for semantic clarity and to retain 
+  This operator aliases the scope to a new name. It's helpful for semantic clarity and to retain
   default scope or to reference from another `{{with}}` block.
 
   ```handlebars
@@ -34606,7 +34606,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
 
 function program1(depth0,data) {
-  
+
   var buffer = '', stack1, hashTypes, hashContexts;
   data.buffer.push("<option value=\"\">");
   hashTypes = {};
@@ -34618,7 +34618,7 @@ function program1(depth0,data) {
   }
 
 function program3(depth0,data) {
-  
+
   var stack1, hashTypes, hashContexts;
   hashTypes = {};
   hashContexts = {};
@@ -34627,7 +34627,7 @@ function program3(depth0,data) {
   else { data.buffer.push(''); }
   }
 function program4(depth0,data) {
-  
+
   var hashContexts, hashTypes;
   hashContexts = {'content': depth0,'label': depth0};
   hashTypes = {'content': "ID",'label': "ID"};
@@ -34638,7 +34638,7 @@ function program4(depth0,data) {
   }
 
 function program6(depth0,data) {
-  
+
   var stack1, hashTypes, hashContexts;
   hashTypes = {};
   hashContexts = {};
@@ -34647,7 +34647,7 @@ function program6(depth0,data) {
   else { data.buffer.push(''); }
   }
 function program7(depth0,data) {
-  
+
   var hashContexts, hashTypes;
   hashContexts = {'content': depth0};
   hashTypes = {'content': "ID"};
@@ -34665,7 +34665,7 @@ function program7(depth0,data) {
   stack1 = helpers['if'].call(depth0, "view.optionGroupPath", {hash:{},inverse:self.program(6, program6, data),fn:self.program(3, program3, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   return buffer;
-  
+
 }),
   attributeBindings: ['multiple', 'disabled', 'tabindex', 'name'],
 
@@ -37930,7 +37930,7 @@ Ember.Router = Ember.Object.extend(Ember.Evented, {
     var passedName = args[0], name, self = this,
       isQueryParamsOnly = false;
 
-    
+
     if (!isQueryParamsOnly && passedName.charAt(0) === '/') {
       name = passedName;
     } else if (!isQueryParamsOnly) {
@@ -38080,7 +38080,7 @@ function findChildRouteName(parentRoute, originatingChildRoute, name) {
       targetChildRouteName = originatingChildRoute.routeName.split('.').pop(),
       namespace = parentRoute.routeName === 'application' ? '' : parentRoute.routeName + '.';
 
-  
+
   // Second, try general loading state, e.g. 'loading'
   childName = namespace + name;
   if (routeHasBeenDefined(router, childName)) {
@@ -38690,7 +38690,7 @@ Ember.Route = Ember.Object.extend(Ember.ActionHandler, {
 
     var args = [controller, context];
 
-    
+
     if (this.setupControllers) {
       Ember.deprecate("Ember.Route.setupControllers is deprecated. Please use Ember.Route.setupController(controller, model) instead.");
       this.setupControllers(controller, context);
@@ -39908,7 +39908,7 @@ Ember.onLoad('Ember.Handlebars', function(Handlebars) {
           types = options.types,
           data = options.data;
 
-      
+
       // Original implementation if query params not enabled
       return resolveParams(parameters.context, parameters.params, { types: types, data: data });
     }).property(),
@@ -39939,7 +39939,7 @@ Ember.onLoad('Ember.Handlebars', function(Handlebars) {
         }
       }
 
-      
+
       return resolvedParams;
     }).property('resolvedParams', 'queryParams', 'router.url'),
 
@@ -40398,7 +40398,7 @@ Ember.onLoad('Ember.Handlebars', function(Handlebars) {
     @return {String} HTML string
   */
   Handlebars.registerHelper('outlet', function outletHelper(property, options) {
-   
+
     var outletSource,
         container,
         viewName,
@@ -40987,7 +40987,7 @@ Ember.ControllerMixin.reopen({
 
   /**
     Transition into another route while replacing the current URL, if possible.
-    This will replace the current history entry instead of adding a new one. 
+    This will replace the current history entry instead of adding a new one.
     Beside that, it is identical to `transitionToRoute` in all other respects.
 
     ```javascript
@@ -41202,7 +41202,7 @@ Ember.View.reopen({
 
 // Add a new named queue after the 'actions' queue (where RSVP promises
 // resolve), which is used in router transitions to prevent unnecessary
-// loading state entry if all context promises resolve on the 
+// loading state entry if all context promises resolve on the
 // 'actions' queue first.
 
 var queues = Ember.run.queues,
@@ -41632,7 +41632,7 @@ Ember.HistoryLocation = Ember.Object.extend({
     rootURL = rootURL.replace(/\/$/, '');
     var url = path.replace(rootURL, '');
 
-    
+
     return url;
   },
 
@@ -44673,7 +44673,7 @@ Ember.StateManager = generateRemovedClass("Ember.StateManager");
 
 /**
   This was exported to ember-states plugin for v 1.0.0 release. See: https://github.com/emberjs/ember-states
-  
+
   @class StateManager
   @namespace Ember
 */
@@ -44682,7 +44682,7 @@ Ember.State = generateRemovedClass("Ember.State");
 
 /**
   This was exported to ember-states plugin for v 1.0.0 release. See: https://github.com/emberjs/ember-states
-  
+
   @class State
   @namespace Ember
 */
@@ -44960,8 +44960,8 @@ var __module2__ = (function(__dependency1__, __dependency2__) {
         } else {
           for(var key in context) {
             if(context.hasOwnProperty(key)) {
-              if(data) { 
-                data.key = key; 
+              if(data) {
+                data.key = key;
                 data.index = i;
                 data.first = (i === 0);
               }
@@ -45470,9 +45470,9 @@ var __module9__ = (function() {
 
   var $0 = $$.length - 1;
   switch (yystate) {
-  case 1: return new yy.ProgramNode($$[$0-1], this._$); 
+  case 1: return new yy.ProgramNode($$[$0-1], this._$);
   break;
-  case 2: return new yy.ProgramNode([], this._$); 
+  case 2: return new yy.ProgramNode([], this._$);
   break;
   case 3:this.$ = new yy.ProgramNode([], $$[$0-1], $$[$0], this._$);
   break;
@@ -45488,7 +45488,7 @@ var __module9__ = (function() {
   break;
   case 9:this.$ = [$$[$0]];
   break;
-  case 10: $$[$0-1].push($$[$0]); this.$ = $$[$0-1]; 
+  case 10: $$[$0-1].push($$[$0]); this.$ = $$[$0-1];
   break;
   case 11:this.$ = new yy.BlockNode($$[$0-2], $$[$0-1].inverse, $$[$0-1], $$[$0], this._$);
   break;
@@ -45546,7 +45546,7 @@ var __module9__ = (function() {
   break;
   case 38:this.$ = new yy.IdNode($$[$0], this._$);
   break;
-  case 39: $$[$0-2].push({part: $$[$0], separator: $$[$0-1]}); this.$ = $$[$0-2]; 
+  case 39: $$[$0-2].push({part: $$[$0], separator: $$[$0-1]}); this.$ = $$[$0-2];
   break;
   case 40:this.$ = [{part: $$[$0]}];
   break;
@@ -45868,14 +45868,14 @@ var __module9__ = (function() {
                                        this.begin("mu");
                                      }
                                      if(yy_.yytext) return 14;
-                                   
+
   break;
   case 1:return 14;
   break;
   case 2:
                                      this.popState();
                                      return 14;
-                                   
+
   break;
   case 3:strip(0,4); this.popState(); return 15;
   break;
@@ -64946,7 +64946,7 @@ var AssigneeFilterView = Ember.View.extend({
   },
   modeClass : function() {
     var lastClicked = this.get("lastClicked");
-    
+
     if(!lastClicked) return "";
 
     if (lastClicked === this){
@@ -65007,7 +65007,7 @@ var CardView = Ember.View.extend({
     return this._super();
   }
 
-  
+
 });
 
 module.exports = CardView;
@@ -65073,7 +65073,7 @@ var CardWrapperView = Em.View.extend({
     },
     setupDroppable: function() {
       var self = this;
-      this.$().droppable({ scope: "assignee", 
+      this.$().droppable({ scope: "assignee",
         hoverClass: "assignee-accept",
         drop: function(ev, ui) {
           var view = Em.View.views[self.$().find("> div").attr("id")];
@@ -65125,7 +65125,7 @@ var CollectionView = Ember.CollectionView.extend({
       },
       deactivate: function() {
         // that.get("controller").set("isHovering", false);
-      }, 
+      },
       update: function (ev, ui) {
 
         var findViewData = function (element){
@@ -65156,7 +65156,7 @@ var CollectionView = Ember.CollectionView.extend({
           that.get("controller").cardMoved(currentData, currentData.get("model.number"))
           return;
         }
-        
+
         if(first) {
           that.get("controller").cardMoved(currentData, (after || 1)/2);
           // dragged it to the top
@@ -65210,7 +65210,7 @@ var CssView = Ember.View.extend({
     this.rerender()
   }.observes("content.combinedLabels"),
   render: function () {
-    
+
     jQuery.Color.fn.contrastColor = function() {
         var r = this._rgba[0], g = this._rgba[1], b = this._rgba[2];
         return (((r*299)+(g*587)+(b*144))/1000) >= 131.5 ? "#333" : "white";
@@ -65236,13 +65236,13 @@ var CssView = Ember.View.extend({
 
     _(["filter","card-label"]).each(function(name){
        _(that.get("content.combinedLabels")).each(function(l){
-       
+
          _([
            {
              template: ".<%= name %>.-x<%= color %> .dim, .<%= name %>.-x<%= color %> .dim:hover",
              opacity: 0.6
            },
-           { 
+           {
              template: ".<%= name %>.-x<%= color %> .active, .<%= name %>.-x<%= color %> .active:hover",
              opacity: 1
            },
@@ -65432,7 +65432,7 @@ var CollectionView = Ember.CollectionView.extend({
       },
       deactivate: function() {
         // that.get("controller").set("isHovering", false);
-      }, 
+      },
       update: function (ev, ui) {
 
         var findViewData = function (element){
@@ -65463,7 +65463,7 @@ var CollectionView = Ember.CollectionView.extend({
           that.get("controller").cardMoved(currentData, currentData.get("model.number"))
           return;
         }
-        
+
         if(first) {
           that.get("controller").cardMoved(currentData, (after || 1)/2);
           // dragged it to the top
@@ -65517,15 +65517,15 @@ var ModalView = Em.View.extend({
     $('body').on('keyup.modal', function(event) {
       if (event.keyCode === 27) this.get('controller').send('closeModal');
     }.bind(this));
-    
+
     this.$(".fullscreen-body").on('click.modal', function(event){
        if($(event.target).is("[data-ember-action]")){return;}
-       event.stopPropagation();    
+       event.stopPropagation();
     }.bind(this))
-     
+
     this.$(".fullscreen-overlay, .close").on('click.modal', function(event){
      if($(event.target).is("[data-ember-action]")){return;}
-     this.get('controller').send('closeModal');        
+     this.get('controller').send('closeModal');
     }.bind(this))
 
     this.$(':input:not(.close)').first().focus();

@@ -5,7 +5,7 @@
 
   {{#if App.repo.is_collaborator}}
   <div class="create-button">
-    <button {{action createNewIssue }} class="hb-button small">Create new issue</button>
+    <button {{action createNewIssue }} class="hb-button small">Create new issue on <strong class='repo-uppercase-name'>{{App.repo.name}}</strong></button>
 
     <span class="dropdown">
       <a data-toggle="dropdown" class="dropdown-toggle hb-icon-link" href="#">
@@ -23,7 +23,7 @@
   </div>
   {{else}}
   <div class="create-button">
-    <a target="_blank" href="{{unbound App.repo.html_url}}/issues/new" class="hb-button small">Create new issue</a>
+    <a target="_blank" href="{{unbound App.repo.html_url}}/issues/new" class="hb-button small">Create new issue on <strong class='repo-uppercase-name'>{{App.repo.name}}</strong></a>
   </div>
   {{/if}}
 

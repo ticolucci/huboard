@@ -404,3 +404,7 @@
 .ui-icon-upload:before {
 	content: "\e606";
 }
+
+.repo-uppercase-name {
+	text-transform: uppercase;
+}

@@ -26,3 +26,7 @@
     App.advanceReadiness();
   </script>
 <% end %>
+
+<% content_for :title do %>
+  <%= @repo.name %>
+<% end %>
